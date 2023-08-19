@@ -30,14 +30,11 @@ mount and create subvolume
 mount -o compress=lzo /dev/nvme0n1p3 /mnt
 
 btrfs subvolume create /mnt/@
-btrfs subvolume set-default subvolume-id / 可以将创建的root子卷设置为默认子卷,直接挂载分区就会挂载此子卷，非必要操作
 btrfs subvolume create /mnt/@home
 btrfs subvolume create /mnt/@logs
 btrfs subvolume create /mnt/@tmp
-btrfs subvolume create /mnt/@docker
-btrfs subvolume create /mnt/@pkgs
+btrfs subvolume create /mnt/@cache
 btrfs subvolume create /mnt/@snapshots
-btrfs subvolume create /mnt/@build
 ```
 
 
@@ -51,10 +48,8 @@ ID 256 gen 405 parent 5 top level 5 path @
 ID 257 gen 409 parent 5 top level 5 path @home
 ID 258 gen 409 parent 5 top level 5 path @logs
 ID 259 gen 404 parent 5 top level 5 path @tmp
-ID 260 gen 257 parent 5 top level 5 path @docker
-ID 261 gen 310 parent 5 top level 5 path @pkgs
+ID 261 gen 310 parent 5 top level 5 path @cache
 ID 262 gen 288 parent 5 top level 5 path @snapshots
-ID 263 gen 20 parent 5 top level 5 path @build
 ```
 ```sh
 umount /mnt
@@ -66,25 +61,15 @@ mkdir -p /mnt/{btrfs-root,boot/efi,home,var/{log,lib/{docker,build},cache/pacman
 mount -o noatime,nodiratime,compress=lzo,subvol=@home /dev/nvme0n1p3 /mnt/home
 mount -o noatime,nodiratime,compress=lzo,subvol=@logs /dev/nvme0n1p3 /mnt/var/log
 mount -o noatime,nodiratime,compress=lzo,subvol=@tmp /dev/nvme0n1p3 /mnt/tmp
-mount -o noatime,nodiratime,compress=lzo,subvol=@docker /dev/nvme0n1p3 /mnt/var/lib/docker
-mount -o noatime,nodiratime,compress=lzo,subvol=@pkgs /dev/nvme0n1p3 /mnt/var/cache/pacman
+mount -o noatime,nodiratime,compress=lzo,subvol=@cache /dev/nvme0n1p3 /mnt/var/cache
 mount -o noatime,nodiratime,compress=lzo,subvol=@snapshots /dev/nvme0n1p3 /mnt/.snapshots
-mount -o noatime,nodiratime,compress=lzo,subvol=@build /dev/nvme0n1p3 /mnt/var/lib/build
-```
-
-```
-mount -o subvol=@,defaults,noatime,ssd,discard=async,compress=zstd -m /dev/nvme0n1p2 /mnt
-mount -o subvol=@opt,defaults,noatime,ssd,discard=async,compress=zstd -m /dev/nvme0n1p2 /mnt/opt
-mount -o subvol=@root,defaults,noatime,ssd,discard=async,compress=zstd -m /dev/nvme0n1p2 /mnt/root
-mount -o subvol=@tmp,defaults,noatime,ssd,discard=async,compress=zstd -m /dev/nvme0n1p2 /mnt/tmp
-mount -o subvol=@var,defaults,noatime,ssd,discard=async,compress=zstd -m /dev/nvme0n1p2 /mnt/var
 ```
 
 
 disable cow
 ```
 chattr +C /mnt/tmp
-chattr +C /mnt/var
+chattr +C /mnt/var/cache
 ```
 enable swap `swapon /dev/sda2`
 
