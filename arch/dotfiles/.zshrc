@@ -12,6 +12,7 @@ fi
 export LANGUAGE=zh_CN:en_US
 export EDITOR=nvim
 export ALIYUNPAN_CONFIG_DIR=~/.config/aliyun
+export SUDO_ASKPASS=~/scripts/dpass.sh
 
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -19,30 +20,52 @@ source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
 eval "$(lua /usr/share/z.lua/z.lua --init zsh enhanced once echo)"
 
 # alias
-alias s="fastfetch"
-alias l="lsd -l"
-alias ll="lsd -la"
-alias ra="ranger"
-alias lg="lazygit"
-alias lg="lazygit"
-alias gc="git clean -xdf"
-alias gl="git log --graph --oneline --decorate --all"
-alias b="slstatus -1"
-
-alias hotspot="pkexec create_ap wlan0 lo 'Hiraeth' 'wyz2020zxc'"
-alias weather="curl 'v2d.wttr.in/Beijing'"
-alias renet="sudo systemctl restart NetworkManager"
-alias tran="trans -I -e bing :zh-CN"
-alias dict="trans -d -e bing :zh-CN"
 
 alias d="startx"
+alias ":q"="exit"
 
+# tui
+alias ra="ranger"
+alias lg="lazygit"
+
+# git
+alias gc="git clean -xdf"
+alias gl="git log --graph --oneline --decorate --all"
+alias patch="git format-patch -1"
+
+# tmux
+alias pad="tmux new -s pad"
+alias term="tmux new -s term"
+alias tn="tmux new -s "
+alias ta="tmux attach -t "
+alias tp="tmux attach -t pad"
+alias tt="tmux attach -t term"
+
+# status
+alias s="fastfetch"
+alias b="slstatus -1"
+alias B="sudo upower -i /org/freedesktop/UPower/devices/battery_BAT1 "
+
+# useful cli
+alias l="lsd -l"
+alias ll="lsd -la"
+alias hotspot="pkexec create_ap wlan0 lo 'Hiraeth' 'wyz2020zxc'"
+alias weather="curl 'v2d.wttr.in/Beijing'"
+alias tran="trans -I -e bing :zh-CN"
+alias dict="trans -d -e bing :zh-CN"
+alias ho="hexo clean ; hexo g ; hexo s -o"
+alias h="hexo clean ; hexo g ; hexo s"
+# alias cat="bat"
+# alias renet="sudo systemctl restart NetworkManager"
+
+# pacman and yay
 alias syyu="yay -Syyu"
+alias syu="yay -Syu"
 alias rns="sudo pacman -Rns $(pacman -Qdtq)"
 alias scc="yay -Scc"
 alias news="yay -Pww"
 
- # 按两下 Esc 键往上条命令或者当前正在"
+# double tap Esc to add sudo
 sudo-command-line() {
     [[ -z $BUFFER ]] && zle up-history
     if [[ $BUFFER == sudo\ * ]]; then
@@ -75,6 +98,7 @@ autoload -Uz compinit
 compinit
 # End of lines added by compinstall
 
+eval "$(mcfly init zsh)"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
